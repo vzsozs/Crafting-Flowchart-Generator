@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { MACHINE_DEFINITIONS, ICONS } from '../constants';
-import { Summary } from '../types';
+import { MACHINE_DEFINITIONS, ICONS } from '../src/constants';
+import { Summary } from '../src/types';
 
 interface SidebarProps {
   addMachineNode: (type: string) => void;

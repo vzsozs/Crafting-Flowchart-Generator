@@ -12,7 +12,7 @@ import ReactFlow, {
 } from 'reactflow';
 import MachineNode from './customNodes/MachineNode';
 import ResourceNode from './customNodes/ResourceNode';
-import { CustomNode } from '../types';
+import { CustomNode } from '../src/types';
 
 interface FlowCanvasProps {
   nodes: CustomNode[];
