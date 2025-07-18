@@ -12,9 +12,9 @@ import {
 import 'reactflow/dist/style.css';
 import { MACHINE_DEFINITIONS } from './constants';
 import { MachineNodeData, ResourceNodeData, Summary, SaveFile, CustomNode } from './types';
-import Sidebar from './components/Sidebar';
-import FlowCanvas from './components/FlowCanvas';
-import EditModal from './components/modals/EditModal';
+import Sidebar from '../components/Sidebar';
+import FlowCanvas from '../components/FlowCanvas';
+import EditModal from '../components/modals/EditModal';
 
 let idCounter = 1;
 const getId = () => `node_${idCounter++}`;
