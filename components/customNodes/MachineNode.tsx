@@ -1,56 +1,53 @@
+// components/customNodes/MachineNode.tsx
+
 import React, { memo } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
-import type { MachineNodeData } from '../../types';
+import { MachineNodeData } from '../../src/types';
+import { FaCog } from 'react-icons/fa';
 
-const handleStyle = {
-  width: '12px',
-  height: '12px',
-  border: '3px solid #14b8a6',
-  background: '#1f2937'
-};
-
-const MachineNode: React.FC<NodeProps<MachineNodeData>> = ({ data, isConnectable }) => {
-  const { label, inputs, outputs, power } = data;
-
+const MachineNode: React.FC<NodeProps<MachineNodeData>> = ({ data }) => {
   return (
-    <div className="bg-gray-800 border-2 border-teal-500 rounded-lg shadow-xl w-64">
-      <div className="bg-teal-700 text-white px-3 py-1 rounded-t-md cursor-move">
-        <strong className="text-base">{label}</strong>
+    // 1. JAVÍTÁS: A 'nodrag' class eltávolítva innen, hogy a node újra mozgatható legyen.
+    <div className="bg-gray-800 border-2 border-teal-500 rounded-lg shadow-lg w-48 text-white">
+      
+      {/* 
+        2. JAVÍTÁS: A fejléc megkapja a 'custom-drag-handle' class-t.
+        Ez egy speciális ReactFlow class, ami azt mondja: "Csak ennél a résznél fogva lehet mozgatni a node-ot".
+      */}
+      <div className="custom-drag-handle flex justify-between items-center bg-teal-600 p-2 rounded-t-md font-bold cursor-move">
+        <span className="truncate">{data.label}</span>
+        
+        <button 
+          // 3. JAVÍTÁS: Az eseményt az 'onMouseDown'-nál állítjuk meg.
+          // Ez megakadályozza, hogy a gombra kattintás elindítsa a mozgatást.
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            data.onEdit?.();
+          }}
+          className="p-1 rounded-full hover:bg-teal-700 transition-colors"
+          title="Edit Node"
+        >
+          <FaCog />
+        </button>
       </div>
-      <div className="text-xs text-yellow-400 px-3 py-1 bg-gray-700/50">
-        Power: {power} kW
-      </div>
-      <div className="flex justify-between p-3">
-        <div className="w-1/2 pr-2 border-r border-gray-600">
-          <h4 className="font-bold text-gray-400 text-xs mb-2">INPUTS</h4>
-          {inputs.map((input, index) => (
-            <div key={input.id || `in-${index}`} className="relative my-2 text-left text-xs h-6 flex items-center">
-              <Handle
-                type="target"
-                position={Position.Left}
-                id={input.id || input.name}
-                isConnectable={isConnectable}
-                style={{ ...handleStyle, top: 'auto'}}
-              />
-              <span className="pl-4">{input.name} ({input.amount})</span>
-            </div>
-          ))}
-        </div>
-        <div className="w-1/2 pl-2">
-          <h4 className="font-bold text-gray-400 text-xs mb-2 text-right">OUTPUTS</h4>
-          {outputs.map((output, index) => (
-            <div key={output.id || `out-${index}`} className="relative my-2 text-right text-xs h-6 flex items-center justify-end">
-              <Handle
-                type="source"
-                position={Position.Right}
-                id={output.id || output.name}
-                isConnectable={isConnectable}
-                style={{ ...handleStyle, top: 'auto'}}
-              />
-              <span className="pr-4">({output.amount}) {output.name}</span>
-            </div>
-          ))}
-        </div>
+      
+      <div className="p-3 text-sm">
+        {data.inputs.length > 0 && <div className="text-left text-gray-400 text-xs mb-1">INPUTS</div>}
+        {data.inputs.map((input) => (
+          <div key={input.id} className="relative my-1 text-left">
+            <Handle type="target" position={Position.Left} id={input.id} style={{ top: '50%' }} className="!bg-cyan-500"/>
+            <span className="ml-4">{input.name} ({input.amount})</span>
+          </div>
+        ))}
+        
+        {data.outputs.length > 0 && <div className="text-right text-gray-400 text-xs mt-3 mb-1">OUTPUTS</div>}
+        {data.outputs.map((output) => (
+          <div key={output.id} className="relative my-1 text-right">
+             <Handle type="source" position={Position.Right} id={output.id} style={{ top: '50%' }} className="!bg-fuchsia-500"/>
+            <span className="mr-4">{output.name} ({output.amount})</span>
+          </div>
+        ))}
       </div>
     </div>
   );
