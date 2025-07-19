@@ -1,21 +1,29 @@
-import React, { useMemo } from 'react';
+// components/FlowCanvas.tsx
+
+import React from 'react';
 import ReactFlow, {
-  Background,
   Controls,
-  MiniMap,
+  Background,
   BackgroundVariant,
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
   Node,
   Edge,
+  NodeTypes,
 } from 'reactflow';
+import 'reactflow/dist/style.css';
+
 import MachineNode from './customNodes/MachineNode';
 import ResourceNode from './customNodes/ResourceNode';
-import { CustomNode } from '../src/types';
+
+const nodeTypes: NodeTypes = {
+  machine: MachineNode,
+  resource: ResourceNode,
+};
 
 interface FlowCanvasProps {
-  nodes: CustomNode[];
+  nodes: Node[];
   edges: Edge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
@@ -23,30 +31,30 @@ interface FlowCanvasProps {
   onNodeDoubleClick: (event: React.MouseEvent, node: Node) => void;
 }
 
-const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodeDoubleClick }) => {
-  const nodeTypes = useMemo(() => ({ 
-    machine: MachineNode,
-    resource: ResourceNode 
-  }), []);
-
+const FlowCanvas: React.FC<FlowCanvasProps> = ({
+  nodes,
+  edges,
+  onNodesChange,
+  onEdgesChange,
+  onConnect,
+  onNodeDoubleClick,
+}) => {
   return (
-    <div className="flex-grow h-full" style={{ background: '#111827' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onNodeDoubleClick={onNodeDoubleClick}
-        nodeTypes={nodeTypes}
-        fitView
-        className="bg-gray-900"
-      >
-        <Controls />
-        <MiniMap nodeStrokeWidth={3} zoomable pannable />
-        <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#4b5563" />
-      </ReactFlow>
-    </div>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      onNodeDoubleClick={onNodeDoubleClick}
+      nodeTypes={nodeTypes}
+      fitView
+      className="bg-gray-900"
+      style={{ width: '100%', height: '100%' }}
+    >
+      <Controls />
+      <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+    </ReactFlow>
   );
 };
 

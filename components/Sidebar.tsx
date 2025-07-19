@@ -1,112 +1,85 @@
-import React, { useState } from 'react';
-import { MACHINE_DEFINITIONS, ICONS } from '../src/constants';
-import { Summary } from '../src/types';
+// components/Sidebar.tsx
+
+import React from 'react';
+import { Summary, SummaryItem } from '../src/types';
 
 interface SidebarProps {
-  addMachineNode: (type: string) => void;
-  addResourceNode: (type: 'input' | 'output') => void;
+  addMachineNode: () => void;
   onSave: () => void;
   onLoad: () => void;
   summary: Summary;
+  summaryItems: SummaryItem[];
 }
 
-const CollapsibleSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const Sidebar: React.FC<SidebarProps> = ({ addMachineNode, onSave, onLoad, summary, summaryItems }) => {
   return (
-    <div className="border-b border-gray-700">
-      <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center p-3 text-left text-teal-300 hover:bg-gray-700 focus:outline-none">
-        <span className="font-bold">{title}</span>
-        {isOpen ? ICONS.CHEVRON_UP : ICONS.CHEVRON_DOWN}
+    <aside className="w-72 bg-gray-900 p-4 flex flex-col shadow-lg">
+      <h1 className="text-2xl font-bold text-teal-300 mb-6">Crafting Flowchart</h1>
+
+      <button
+        onClick={addMachineNode}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors mb-6"
+      >
+        Add Machine
       </button>
-      {isOpen && <div className="p-3">{children}</div>}
-    </div>
-  );
-};
 
-const Sidebar: React.FC<SidebarProps> = ({ addMachineNode, addResourceNode, onSave, onLoad, summary }) => {
-  const summaryEntries = Array.from(summary.balance.entries());
-  const requiredInputs = summaryEntries.filter(([, amount]) => amount < 0);
-  const netOutputs = summaryEntries.filter(([, amount]) => amount > 0);
-
-
-  return (
-    <div className="w-80 h-screen bg-gray-800 text-gray-200 flex flex-col shadow-2xl border-r border-gray-700">
-      <div className="p-3 border-b border-gray-700">
-        <h1 className="text-xl font-bold text-teal-400">Flowchart Controls</h1>
-      </div>
-
-      <div className="flex-grow overflow-y-auto">
-        <CollapsibleSection title="File">
-          <div className="flex space-x-2">
-            <button onClick={onSave} className="flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 rounded-md p-2 space-x-2 transition-colors">
-              {ICONS.SAVE} <span>Save</span>
-            </button>
-            <button onClick={onLoad} className="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 rounded-md p-2 space-x-2 transition-colors">
-              {ICONS.LOAD} <span>Load</span>
-            </button>
-          </div>
-        </CollapsibleSection>
-
-        <CollapsibleSection title="Add Machines">
-          <div className="grid grid-cols-2 gap-2">
-            {Object.keys(MACHINE_DEFINITIONS).map(type => (
-              <button key={type} onClick={() => addMachineNode(type)} className="bg-gray-700 hover:bg-teal-800 rounded-md p-2 text-sm transition-colors text-center">
-                {type}
-              </button>
-            ))}
-          </div>
-        </CollapsibleSection>
-
-        <CollapsibleSection title="Add Resources">
-          <div className="flex space-x-2">
-            <button onClick={() => addResourceNode('input')} className="flex items-center justify-center w-full bg-yellow-600 hover:bg-yellow-700 rounded-md p-2 space-x-2 transition-colors">
-              {ICONS.PLUS} <span>Input</span>
-            </button>
-            <button onClick={() => addResourceNode('output')} className="flex items-center justify-center w-full bg-purple-600 hover:bg-purple-700 rounded-md p-2 space-x-2 transition-colors">
-              {ICONS.PLUS} <span>Output</span>
-            </button>
-          </div>
-        </CollapsibleSection>
-
-        <CollapsibleSection title="Summary">
-            <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center bg-gray-900/50 p-2 rounded-md">
-                    <span className="font-semibold text-yellow-400">Total Power:</span>
-                    <span className="font-mono text-yellow-300">{summary.power.toFixed(2)} kW</span>
-                </div>
-                
-                <div>
-                    <h3 className="font-semibold pt-2 text-red-400">Required Inputs (/sec)</h3>
-                    <div className="bg-gray-900/50 p-2 mt-1 rounded-md max-h-32 overflow-y-auto">
-                        {requiredInputs.length > 0 ? requiredInputs.map(([name, amount]) => (
-                            <div key={name} className="flex justify-between font-mono text-xs">
-                                <span className="text-gray-300">{name}:</span>
-                                <span className='text-red-400'>{Math.abs(amount).toFixed(2)}</span>
-                            </div>
-                        )) : <p className="text-gray-400 text-xs text-center">None</p>}
-                    </div>
-                </div>
-
-                <div>
-                    <h3 className="font-semibold pt-2 text-green-400">Net Outputs (/sec)</h3>
-                    <div className="bg-gray-900/50 p-2 mt-1 rounded-md max-h-32 overflow-y-auto">
-                        {netOutputs.length > 0 ? netOutputs.map(([name, amount]) => (
-                            <div key={name} className="flex justify-between font-mono text-xs">
-                            <span className="text-gray-300">{name}:</span>
-                            <span className='text-green-400'>+{amount.toFixed(2)}</span>
-                            </div>
-                        )) : <p className="text-gray-400 text-xs text-center">None</p>}
-                    </div>
-                </div>
-                 {summaryEntries.length === 0 && <p className="text-gray-400 text-xs text-center pt-2">No machines placed.</p>}
+      {/* JAVÍTVA: A táblázat új stílusokkal */}
+      <div className="flex-grow overflow-y-auto pr-2">
+        <h2 className="text-lg font-semibold text-gray-300 mb-2 sticky top-0 bg-gray-900 py-1">Production Summary</h2>
+        {summaryItems.length > 0 ? (
+          <div className="text-xs text-gray-300">
+            {/* Fejléc */}
+            <div className="grid grid-cols-12 gap-2 font-bold uppercase text-gray-500 pb-2 border-b border-gray-700 sticky top-8 bg-gray-900">
+              <div className="col-span-6">Item</div>
+              <div className="col-span-2 text-center">Input</div>
+              <div className="col-span-2 text-center">Output</div>
+              <div className="col-span-2 text-center">Net</div>
             </div>
-        </CollapsibleSection>
+            {/* Adatsorok */}
+            <div className="mt-2 space-y-2">
+              {summaryItems.map(item => {
+                const net = item.totalOutput - item.totalInput;
+                const netColor = net > 0 ? 'text-green-400' : net < 0 ? 'text-red-400' : 'text-gray-400';
+                
+                return (
+                  <div key={item.name} className="grid grid-cols-12 gap-2 items-center py-1 border-b border-dotted border-gray-700">
+                    <div className="col-span-6 font-medium truncate" title={item.name}>
+                      {item.name}
+                    </div>
+                    <div className="col-span-2 text-center text-red-400">
+                      {item.totalInput.toFixed(1)}
+                    </div>
+                    <div className="col-span-2 text-center text-green-400">
+                      {item.totalOutput.toFixed(1)}
+                    </div>
+                    <div className={`col-span-2 text-center font-bold ${netColor}`}>
+                      {net > 0 ? '+' : ''}{net.toFixed(1)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No production data yet.</p>
+        )}
       </div>
 
-      <div className="p-2 text-xs text-center text-gray-500 border-t border-gray-700">
-        v0.2.0
+      <div className="mt-4 border-t border-gray-700 pt-4">
+        <h2 className="text-lg font-semibold text-gray-300 mb-2">Flowchart Actions</h2>
+        <div className="space-y-2">
+          <button onClick={onSave} className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-md transition-colors">Save</button>
+          <button onClick={onLoad} className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition-colors">Load</button>
+        </div>
       </div>
-    </div>
+      
+      <div className="mt-4 border-t border-gray-700 pt-4 text-xs text-gray-400">
+        <h3 className="font-bold mb-1">Overall Summary</h3>
+        <p>Power: {summary.power.toFixed(2)} kW</p>
+        <p>Nodes: {summary.nodeCount || 0}</p>
+        <p>Edges: {summary.edgeCount || 0}</p>
+      </div>
+    </aside>
   );
 };
 
