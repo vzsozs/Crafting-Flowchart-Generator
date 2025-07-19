@@ -29,6 +29,7 @@ interface FlowCanvasProps {
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   onNodeDoubleClick: (event: React.MouseEvent, node: Node) => void;
+  onNodeClick: (event: React.MouseEvent, node: Node) => void; // JAVÍTVA: Visszahelyezve
 }
 
 const FlowCanvas: React.FC<FlowCanvasProps> = ({
@@ -38,6 +39,7 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
   onEdgesChange,
   onConnect,
   onNodeDoubleClick,
+  onNodeClick, 
 }) => {
   return (
     <ReactFlow
@@ -47,6 +49,7 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       onNodeDoubleClick={onNodeDoubleClick}
+      onNodeClick={onNodeClick}
       nodeTypes={nodeTypes}
       fitView
       className="bg-gray-900"
