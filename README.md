@@ -1,5 +1,7 @@
 # Crafting Flowchart Generator
 
+Test page: https://www.formagyar.hu/CraftingCalculator/
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A visual, web-based tool for designing and analyzing complex production chains, inspired by factory simulation games like Factorio and Satisfactory. This application allows you to visually map out your production lines, calculate resource requirements, and get a real-time summary of your factory's overall balance.
