@@ -6,17 +6,15 @@ interface EditModalProps {
   onClose: () => void;
   onSave: (data: MachineNodeData | ResourceNodeData) => void;
   suggestions: string[];
+  onAddMachine?: () => void; // JAVÍTVA: Új, opcionális prop a funkció fogadására
 }
 
-const EditModal: React.FC<EditModalProps> = ({ node, onClose, onSave, suggestions }) => {
+const EditModal: React.FC<EditModalProps> = ({ node, onClose, onSave, suggestions, onAddMachine }) => {
   const [data, setData] = useState(node.data);
 
   useEffect(() => { setData(node.data); }, [node]);
 
-  const handleSave = () => {
-    onSave(data);
-    onClose();
-  };
+  const handleSave = () => { onSave(data); onClose(); };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
@@ -26,20 +24,16 @@ const EditModal: React.FC<EditModalProps> = ({ node, onClose, onSave, suggestion
     setData(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
   };
   const handleRecipeChange = (list: 'inputs' | 'outputs', index: number, field: 'name' | 'amount', value: string | number) => {
-    const machineData = data as MachineNodeData;
-    const newList = [...machineData[list]];
+    const machineData = data as MachineNodeData; const newList = [...machineData[list]];
     const updatedValue = field === 'amount' ? parseFloat(value as string) || 0 : value;
-    newList[index] = { ...newList[index], [field]: updatedValue };
-    setData(prev => ({ ...prev, [list]: newList }));
+    newList[index] = { ...newList[index], [field]: updatedValue }; setData(prev => ({ ...prev, [list]: newList }));
   };
   const addRecipeItem = (list: 'inputs' | 'outputs') => {
-    const machineData = data as MachineNodeData;
-    const newItem: RecipeItem = { id: `item_${Date.now()}_${Math.random()}`, name: 'New Item', amount: 1 };
+    const machineData = data as MachineNodeData; const newItem: RecipeItem = { id: `item_${Date.now()}_${Math.random()}`, name: 'New Item', amount: 1 };
     setData(prev => ({ ...prev, [list]: [...machineData[list], newItem] }));
   };
   const removeRecipeItem = (list: 'inputs' | 'outputs', index: number) => {
-    const machineData = data as MachineNodeData;
-    const newList = machineData[list].filter((_, i) => i !== index);
+    const machineData = data as MachineNodeData; const newList = machineData[list].filter((_, i) => i !== index);
     setData(prev => ({ ...prev, [list]: newList }));
   };
 
@@ -90,51 +84,28 @@ const EditModal: React.FC<EditModalProps> = ({ node, onClose, onSave, suggestion
   const renderResourceEditor = () => {
     const resourceData = data as ResourceNodeData;
     const isInputNode = resourceData.type === 'input';
-
     return (
         <div>
             <label className="block text-sm font-bold mb-2 text-gray-300" htmlFor="resource">Resource Name</label>
             <input id="resource" name="resource" type="text" value={resourceData.resource || ''} onChange={handleInputChange} list="name-suggestions" className="w-full p-2 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500" />
-            
-            {/* JAVÍTVA: A checkbox, a színválasztó és a gomb most már egy flexbox konténerben van */}
             {isInputNode && (
               <div className="flex items-center justify-between mt-4">
-                
-                {/* Checkbox a bal oldalon */}
                 <label className="flex items-center space-x-2 text-gray-300">
-                  <input
-                    type="checkbox"
-                    name="isStocked"
-                    checked={resourceData.isStocked || false}
-                    onChange={handleInputChange}
-                    className="form-checkbox h-5 w-5 text-teal-500 bg-gray-900 border-gray-600 rounded focus:ring-teal-500"
-                  />
+                  <input type="checkbox" name="isStocked" checked={resourceData.isStocked || false} onChange={handleInputChange} className="form-checkbox h-5 w-5 text-teal-500 bg-gray-900 border-gray-600 rounded focus:ring-teal-500"/>
                   <span>Is Stocked</span>
                 </label>
-
-                {/* Színválasztó a jobb oldalon */}
-                <input
-                    id="color"
-                    name="color"
-                    type="color"
-                    value={resourceData.color || '#facc15'}
-                    onChange={handleInputChange}
-                    className="w-7 h-8 p-0 border-none rounded-md bg-transparent cursor-pointer"
-                />
-
+                <input id="color" name="color" type="color" value={resourceData.color || '#facc15'} onChange={handleInputChange} className="w-8 h-8 p-0 border-none rounded-md bg-transparent cursor-pointer"/>
               </div>
             )}
-            
-            {/* Az "Add Machine" gomb mostantól külön sorban van */}
             <button
               onClick={() => {
-                resourceData.onAddMachine?.();
+                onAddMachine?.(); // JAVÍTVA: A prop-ként kapott funkciót hívjuk meg
                 onClose();
               }}
               disabled={isInputNode && !!resourceData.isStocked}
               className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-md p-2 text-sm mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Add Machine
+              Add Machine to other side
             </button>
         </div>
     );
@@ -143,27 +114,14 @@ const EditModal: React.FC<EditModalProps> = ({ node, onClose, onSave, suggestion
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-gray-800 text-white rounded-lg shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] flex flex-col">
-        
-        {/* JAVÍTVA: A datalist-et ide, a látható részen belülre, de a logikán kívülre helyezzük */}
         <datalist id="name-suggestions">
-          {suggestions.map((name: string) => ( // Explicit megadjuk, hogy a 'name' egy string
-            <option key={name} value={name} />
-          ))}
+          {suggestions.map((name: string) => ( <option key={name} value={name} /> ))}
         </datalist>
-
         <div className="flex justify-between items-center border-b border-gray-600 pb-3 mb-4">
-            <h3 className="text-2xl font-bold text-teal-300">
-              Edit Node: <span className="text-white ml-2">{node.type === 'machine' ? (data as MachineNodeData)?.label : (data as ResourceNodeData)?.resource}</span>
-            </h3>
+            <h3 className="text-2xl font-bold text-teal-300"> Edit Node: <span className="text-white ml-2">{node.type === 'machine' ? (data as MachineNodeData)?.label : (data as ResourceNodeData)?.resource}</span> </h3>
             <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">×</button>
         </div>
-        
-        {data && (
-          <div className="overflow-y-auto pr-2">
-            {node.type === 'machine' ? renderMachineEditor() : renderResourceEditor()}
-          </div>
-        )}
-
+        {data && ( <div className="overflow-y-auto pr-2"> {node.type === 'machine' ? renderMachineEditor() : renderResourceEditor()} </div> )}
         <div className="flex justify-end pt-4 border-t border-gray-600 mt-4">
             <button onClick={onClose} className="bg-gray-600 hover:bg-gray-700 rounded-md px-4 py-2 mr-2">Cancel</button>
             <button onClick={handleSave} className="bg-teal-600 hover:bg-teal-700 rounded-md px-4 py-2">Save Changes</button>
