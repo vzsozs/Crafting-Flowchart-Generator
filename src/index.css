@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* For react-flow mini-map dark theme */
+.react-flow__minimap {
+  background-color: #1f2937 !important;
+  border: 1px solid #4b5563;
+}
+.react-flow__minimap-mask {
+  fill: rgba(45, 212, 191, 0.2) !important;
+}
+.react-flow__minimap-node {
+  fill: #4b5563 !important;
+  stroke: none;
+}
+/* For react-flow controls dark theme */
+.react-flow__controls button {
+  background-color: #374151 !important;
+  color: #d1d5db !important;
+  border: 1px solid #4b5563 !important;
+}
+.react-flow__controls button:hover {
+  background-color: #4b5563 !important;
+}
+/* For react-flow background */
+.react-flow__background {
+  background-color: #111827 !important;
+}
+/* For react-flow attribution */
+.react-flow__attribution {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.react-flow__handle {
+  background: #0d9488 !important;
+  border: 2px solid #f0fdfa !important;
+}
