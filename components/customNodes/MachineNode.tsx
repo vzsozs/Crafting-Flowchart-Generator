@@ -1,5 +1,3 @@
-// components/customNodes/MachineNode.tsx
-
 import React, { memo } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { MachineNodeData } from '../../src/types';
@@ -7,24 +5,15 @@ import { FaCog } from 'react-icons/fa';
 
 const MachineNode: React.FC<NodeProps<MachineNodeData>> = ({ data }) => {
   return (
-    // 1. JAVÍTÁS: A 'nodrag' class eltávolítva innen, hogy a node újra mozgatható legyen.
     <div className="bg-gray-800 border-2 border-teal-500 rounded-lg shadow-lg w-48 text-white">
       
-      {/* 
-        2. JAVÍTÁS: A fejléc megkapja a 'custom-drag-handle' class-t.
-        Ez egy speciális ReactFlow class, ami azt mondja: "Csak ennél a résznél fogva lehet mozgatni a node-ot".
-      */}
+      {/* JAVÍTVA: A hiányzó stílusosztályok (szín, padding, stb.) visszaállítva */}
       <div className="custom-drag-handle flex justify-between items-center bg-teal-600 p-2 rounded-t-md font-bold cursor-move">
         <span className="truncate">{data.label}</span>
         
         <button 
-          // 3. JAVÍTÁS: Az eseményt az 'onMouseDown'-nál állítjuk meg.
-          // Ez megakadályozza, hogy a gombra kattintás elindítsa a mozgatást.
           onMouseDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            data.onEdit?.();
-          }}
+          data-action="edit" 
           className="p-1 rounded-full hover:bg-teal-700 transition-colors"
           title="Edit Node"
         >

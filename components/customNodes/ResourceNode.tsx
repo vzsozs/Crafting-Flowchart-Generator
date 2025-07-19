@@ -8,18 +8,14 @@ import { FaCog, FaPlus } from 'react-icons/fa';
 const ResourceNode: React.FC<NodeProps<ResourceNodeData>> = ({ data }) => {
   const isInput = data.type === 'input';
 
-  // Alapértelmezett színek
-  const defaultInputColor = '#facc15'; // Tailwind yellow-400
-  const outputColor = '#a855f7';     // Tailwind purple-600
-
-  // JAVÍTVA: A háttérszín most már dinamikus
+  const defaultInputColor = '#facc15';
+  const outputColor = '#a855f7';
   const backgroundColor = isInput ? (data.color || defaultInputColor) : outputColor;
   
-  // JAVÍTVA: Az átlátszóságot egy class-szal kezeljük
-  const opacityClass = (isInput && data.isStocked) ? 'opacity-70' : 'opacity-100';
+  const opacityClass = (isInput && data.isStocked) ? 'opacity-80' : 'opacity-100';
+
 
   return (
-    // JAVÍTVA: A színt a 'style' attribútummal, az átlátszóságot a 'className'-nel adjuk meg
     <div 
       className={`rounded-lg shadow-lg text-white w-40 transition-opacity ${opacityClass}`}
       style={{ backgroundColor: backgroundColor }}
@@ -36,11 +32,23 @@ const ResourceNode: React.FC<NodeProps<ResourceNodeData>> = ({ data }) => {
             )}
           </div>
           <div className="flex items-center space-x-1">
-            <button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); data.onEdit?.(); }} className="p-1 rounded-full hover:bg-black/20 transition-colors" title="Edit Resource">
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              data-action="edit"
+              // JAVÍTVA: A className most már helyesen van összeállítva
+              className={`p-1 rounded-full hover:bg-black/20 transition-colors`}
+              title="Edit Resource"
+            >
               <FaCog size={12} />
             </button>
             {!(isInput && data.isStocked) && (
-              <button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); data.onAddMachine?.(); }} className="p-1 rounded-full hover:bg-black/20 transition-colors" title="Add Connected Machine">
+              <button
+                onMouseDown={(e) => e.stopPropagation()}
+                data-action="add-machine"
+                // JAVÍTVA: A className most már helyesen van összeállítva
+                className={`p-1 rounded-full hover:bg-black/20 transition-colors`}
+                title="Add Connected Machine"
+              >
                 <FaPlus size={12} />
               </button>
             )}
