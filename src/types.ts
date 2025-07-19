@@ -8,20 +8,17 @@ export interface RecipeItem {
 
 export interface MachineNodeData {
   label: string;
+  power: number;
+  speed: number;
   inputs: RecipeItem[];
   outputs: RecipeItem[];
-  power: number; // Power in kW
-  speed: number; // Operations per second
-  onEdit?: () => void; 
 }
 
 export interface ResourceNodeData {
   type: 'input' | 'output';
   resource: string;
-  isStocked?: boolean; // JAVÍTVA: Új, opcionális tulajdonság
+  isStocked?: boolean;
   color?: string;
-  onEdit?: () => void; // JAVÍTVA: Hozzáadjuk a szerkesztés funkciót
-  onAddMachine?: () => void; // JAVÍTVA: Hozzáadjuk az új gép hozzáadása funkciót
 }
 
 export type CustomNode = Node<MachineNodeData | ResourceNodeData>;
